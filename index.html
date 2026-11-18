@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10051f">
+<title>GTA VI — Contagem Regressiva Global</title>
+<style>
+:root{
+  --bg:#090311;--panel:rgba(18,7,37,.88);--line:rgba(255,91,210,.42);
+  --pink:#ff4fc8;--violet:#b34cff;--cyan:#38e8ff;--gold:#ffe36b;
+  --white:#f8f2ff;--muted:#b9a9cc;--glow:0 0 14px rgba(255,79,200,.55),0 0 34px rgba(116,54,255,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+body{
+ background:
+ radial-gradient(ellipse at 50% 55%,rgba(102,16,147,.36),transparent 55%),
+ radial-gradient(ellipse at 12% 88%,rgba(255,48,180,.16),transparent 35%),
+ linear-gradient(155deg,#07020d 0%,#16052d 48%,#080311 100%);
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.17;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:34px 34px}
+.scan{position:fixed;inset:0;pointer-events:none;opacity:.08;background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px,transparent 5px)}
+.shell{height:100%;width:100%;padding:1.35vw;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:1vh;position:relative}
+.top{display:grid;grid-template-columns:1fr auto;align-items:center;gap:1vw}
+.brand{display:flex;align-items:center;gap:1vw;min-width:0}
+.logo{font-weight:1000;letter-spacing:.06em;line-height:.82;font-size:clamp(25px,4.2vw,70px);background:linear-gradient(180deg,#fff6a6 5%,#ffdc48 38%,#ff4fc8 82%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 22px rgba(255,76,204,.32)}
+.brand-sub{border-left:2px solid var(--cyan);padding-left:1vw}
+.brand-sub b{display:block;color:var(--cyan);font-size:clamp(10px,1.35vw,22px);letter-spacing:.13em}
+.brand-sub span{display:block;color:var(--gold);font-size:clamp(8px,.8vw,13px);margin-top:.35em;letter-spacing:.08em}
+.main-clock{border:1px solid var(--pink);border-radius:13px;padding:.55vw 1vw;background:linear-gradient(120deg,rgba(41,8,66,.9),rgba(15,5,33,.88));box-shadow:var(--glow);min-width:32vw;text-align:center}
+.clock-label{font-size:clamp(8px,.75vw,13px);letter-spacing:.2em;color:#ffc5f0;font-weight:bold}
+.clock-digits{display:flex;justify-content:center;gap:.55vw;margin-top:.3vw}
+.digit{font-size:clamp(22px,3.4vw,56px);font-weight:900;line-height:1;color:#fff;text-shadow:0 0 12px var(--cyan)}
+.digit small{display:block;font-size:clamp(7px,.65vw,11px);letter-spacing:.16em;color:var(--cyan);text-align:center;margin-top:.22em}
+.content{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,24%);gap:1vw}
+.map-panel{position:relative;min-height:0;border:1px solid rgba(255,82,211,.45);border-radius:17px;overflow:hidden;background:linear-gradient(145deg,rgba(24,7,52,.7),rgba(8,4,22,.7));box-shadow:inset 0 0 40px rgba(145,32,255,.12),var(--glow)}
+.map-grid{position:absolute;inset:0;background:linear-gradient(rgba(255,68,205,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,68,205,.1) 1px,transparent 1px);background-size:4.5vw 4.5vw;transform:perspective(450px) rotateX(48deg) scale(1.35);transform-origin:bottom;opacity:.45}
+.map-svg{position:absolute;width:100%;height:100%;inset:0}
+.land{fill:#29104b;stroke:#f34bc6;stroke-width:1.2;opacity:.88;filter:drop-shadow(0 0 5px rgba(255,65,210,.65))}
+.coast{fill:none;stroke:#ff8bdd;stroke-width:1;opacity:.45}
+.route{stroke:#3eeeff;stroke-width:1.4;stroke-dasharray:5 6;opacity:.85;fill:none}
+.pin{fill:var(--cyan);stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 7px var(--cyan))}
+.pin.pink{fill:var(--pink);filter:drop-shadow(0 0 8px var(--pink))}
+.region{position:absolute;z-index:2;min-width:105px;padding:7px 10px;border:1px solid var(--cyan);border-radius:8px;background:rgba(5,5,22,.9);box-shadow:0 0 13px rgba(56,232,255,.26);text-align:center;transform:translate(-50%,-50%)}
+.region.hot{border-color:var(--pink);box-shadow:0 0 15px rgba(255,79,200,.4)}
+.region b{display:block;font-size:clamp(8px,.85vw,13px);letter-spacing:.07em}
+.region .time{display:block;font-size:clamp(11px,1.1vw,18px);font-weight:900;letter-spacing:.04em;margin-top:3px}
+.region small{font-size:8px;color:var(--muted);letter-spacing:.1em}
+.r-ny{left:18%;top:31%}.r-la{left:10%;top:58%}.r-lon{left:43%;top:26%}.r-eu{left:57%;top:34%}.r-br{left:34%;top:69%}.r-ind{left:71%;top:61%}.r-cn{left:82%;top:40%}.r-au{left:85%;top:77%}.r-nz{left:93%;top:88%}
+.br-dot{position:absolute;left:33%;top:67%;width:9px;height:9px;background:var(--gold);border-radius:50%;box-shadow:0 0 14px var(--gold);z-index:3}
+.side{display:grid;grid-template-rows:1fr auto;gap:1vh;min-height:0}
+.world-list{border:1px solid rgba(57,224,255,.32);border-radius:14px;background:rgba(10,5,26,.8);padding:1vw;overflow:hidden}
+.side-title{color:var(--cyan);font-size:clamp(9px,.9vw,14px);letter-spacing:.18em;font-weight:900;margin-bottom:.7vw}
+.world-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.08);padding:.55vw 0;gap:8px}
+.world-row:last-child{border:0}
+.world-row span{font-size:clamp(9px,.85vw,13px);color:#e9dff6}
+.world-row b{font-size:clamp(10px,1vw,15px);color:var(--cyan);font-variant-numeric:tabular-nums}
+.note{font-size:clamp(7px,.65vw,10px);color:#a99bb9;line-height:1.35;margin-top:.6vw}
+.question{border:1px solid var(--pink);border-radius:14px;background:linear-gradient(105deg,rgba(255,49,178,.22),rgba(16,5,37,.96) 42%);box-shadow:var(--glow);padding:1vw 1.25vw;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1vw;min-height:92px}
+.q-label{font-size:clamp(9px,.9vw,14px);font-weight:900;letter-spacing:.1em;color:#ffb9ec;white-space:nowrap}
+.q-text{font-size:clamp(14px,1.65vw,26px);font-weight:900;line-height:1.16;text-shadow:0 0 12px rgba(255,79,200,.32)}
+.q-prompt{font-size:clamp(8px,.75vw,12px);color:var(--cyan);font-weight:bold;letter-spacing:.12em;text-align:right;white-space:nowrap}
+.bottom{display:flex;justify-content:space-between;align-items:center;color:#9c8cab;font-size:clamp(7px,.7vw,11px);letter-spacing:.06em;padding:0 .25vw}
+.live{color:#fff;background:#e52e43;border-radius:5px;padding:5px 9px;font-weight:900;margin-right:8px;box-shadow:0 0 12px #e52e43}
+.pulse{animation:pulse 1.7s infinite}
+@keyframes pulse{50%{opacity:.45}}
+/* vertical canvas: same page, deliberately rearranged for phone-shaped output */
+body.vertical .shell{padding:2.2vw;grid-template-rows:auto minmax(0,1fr) auto;gap:1.2vh}
+body.vertical .top{grid-template-columns:1fr;gap:1vh}
+body.vertical .brand{justify-content:center}
+body.vertical .logo{font-size:clamp(34px,8vw,76px)}
+body.vertical .brand-sub b{font-size:clamp(12px,2.8vw,23px)}
+body.vertical .brand-sub span{font-size:clamp(9px,1.8vw,14px)}
+body.vertical .main-clock{min-width:0;width:100%;padding:1.3vw}
+body.vertical .digit{font-size:clamp(25px,7vw,58px)}
+body.vertical .digit small{font-size:clamp(8px,1.7vw,12px)}
+body.vertical .content{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:1vh}
+body.vertical .map-panel{min-height:0}
+body.vertical .region{min-width:0;padding:4px 5px;border-radius:5px}
+body.vertical .region b{font-size:clamp(6px,1.55vw,12px)}
+body.vertical .region .time{font-size:clamp(8px,1.9vw,14px)}
+body.vertical .region small{display:none}
+body.vertical .r-ny{left:17%;top:29%}body.vertical .r-la{left:9%;top:54%}body.vertical .r-lon{left:43%;top:23%}
+body.vertical .r-eu{left:61%;top:34%}body.vertical .r-br{left:34%;top:70%}body.vertical .r-ind{left:73%;top:58%}
+body.vertical .r-cn{left:84%;top:39%}body.vertical .r-au{left:83%;top:78%}body.vertical .r-nz{left:91%;top:91%}
+body.vertical .side{grid-template-columns:1fr;grid-template-rows:auto;gap:0}
+body.vertical .world-list{display:none}
+body.vertical .question{grid-template-columns:1fr;gap:.6vh;text-align:center;padding:2vw;min-height:0}
+body.vertical .q-label{font-size:clamp(9px,2vw,14px)}
+body.vertical .q-text{font-size:clamp(16px,3.6vw,27px)}
+body.vertical .q-prompt{text-align:center;font-size:clamp(8px,1.7vw,12px)}
+body.vertical .bottom{font-size:clamp(7px,1.5vw,11px)}
+body.vertical .note{display:none}
+@media(max-aspect-ratio:4/5){.shell{padding:2vw}.top{grid-template-columns:1fr}.brand{justify-content:center}.main-clock{min-width:0;width:100%}.content{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.side{grid-template-columns:1fr;grid-template-rows:auto}.world-list{display:none}.question{grid-template-columns:1fr;text-align:center}.q-prompt{text-align:center}}
+</style>
+</head>
+<body>
+<div class="scan"></div>
+<div class="shell">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">GTA VI</div>
+      <div class="brand-sub"><b>CONTAGEM REGRESSIVA</b><span>LANÇAMENTO • 19.11.2026 • FAN COUNTDOWN</span></div>
+    </div>
+    <div class="main-clock">
+      <div class="clock-label">CONTAGEM PARA O BRASIL • HORÁRIO-ALVO LOCAL</div>
+      <div class="clock-digits">
+        <div class="digit" id="days">00<small>DIAS</small></div>
+        <div class="digit" id="hours">00<small>HORAS</small></div>
+        <div class="digit" id="minutes">00<small>MIN</small></div>
+        <div class="digit" id="seconds">00<small>SEG</small></div>
+      </div>
+    </div>
+  </header>
+  <main class="content">
+    <section class="map-panel" aria-label="Mapa mundial com contagens regressivas">
+      <div class="map-grid"></div>
+      <svg class="map-svg" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <g class="land">
+          <path d="M80 105 L115 70 175 55 220 78 245 110 226 145 194 158 180 190 155 205 145 250 120 272 105 245 85 218 72 180 55 150Z"/>
+          <path d="M205 270 L245 260 280 282 300 320 286 370 270 420 250 470 225 500 210 465 202 420 185 380 188 335Z"/>
+          <path d="M390 115 L425 85 475 75 525 88 550 112 590 105 625 125 665 130 700 115 760 130 820 160 860 195 845 225 800 230 770 210 730 230 700 215 665 245 630 230 610 205 580 220 555 195 520 205 495 180 460 180 440 155 405 150Z"/>
+          <path d="M445 220 L485 215 525 230 550 270 535 315 510 350 490 390 470 420 445 385 430 340 410 295 420 255Z"/>
+          <path d="M710 300 L755 280 805 290 845 320 830 355 790 370 755 355 725 340Z"/>
+          <path d="M820 420 L865 405 910 425 925 455 900 475 855 465 825 445Z"/>
+          <path d="M890 485 L920 478 940 490 930 505 905 502Z"/>
+          <path d="M575 360 L595 350 610 365 600 390 585 385Z"/>
+        </g>
+        <g class="coast">
+          <path d="M80 105 L115 70 175 55 220 78 245 110 226 145 194 158 180 190"/>
+          <path d="M205 270 L245 260 280 282 300 320 286 370 270 420"/>
+          <path d="M390 115 L425 85 475 75 525 88 550 112 590 105 625 125 665 130 700 115 760 130 820 160"/>
+        </g>
+        <g class="route">
+          <path d="M170 170 Q300 80 455 150 T650 180"/>
+          <path d="M455 150 Q530 260 505 325"/>
+          <path d="M505 325 Q700 250 830 330"/>
+          <path d="M830 330 Q870 400 875 440"/>
+          <path d="M170 170 Q200 300 250 360"/>
+        </g>
+        <g>
+          <circle class="pin" cx="170" cy="170" r="5"/><circle class="pin pink" cx="455" cy="150" r="5"/>
+          <circle class="pin" cx="650" cy="180" r="5"/><circle class="pin pink" cx="505" cy="325" r="5"/>
+          <circle class="pin" cx="830" cy="330" r="5"/><circle class="pin" cx="875" cy="440" r="5"/>
+          <circle class="pin" cx="250" cy="360" r="5"/><circle class="pin" cx="745" cy="270" r="5"/>
+        </g>
+      </svg>
+      <div class="br-dot"></div>
+      <div class="region r-ny"><b>NOVA YORK</b><span class="time" data-zone="America/New_York">--:--:--</span><small>ESTIMATIVA LOCAL</small></div>
+      <div class="region hot r-la"><b>CALIFÓRNIA</b><span class="time" data-zone="America/Los_Angeles">--:--:--</span><small>ESTIMATIVA LOCAL</small></div>
+      <div class="region r-lon"><b>LONDRES</b><span class="time" data-zone="Europe/London">--:--:--</span><small>ESTIMATIVA LOCAL</small></div>
+      <div class="region r-eu"><b>EUROPA</b><span class="time" data-zone="Europe/Paris">--:--:--</span><small>PARIS • ESTIMATIVA</small></div>
+      <div class="region hot r-br"><b>BRASIL</b><span class="time" data-zone="America/Sao_Paulo">--:--:--</span><small>HORÁRIO DE REFERÊNCIA</small></div>
+      <div class="region r-ind"><b>ÍNDIA</b><span class="time" data-zone="Asia/Kolkata">--:--:--</span><small>ESTIMATIVA LOCAL</small></div>
+      <div class="region r-cn"><b>CHINA</b><span class="time" data-zone="Asia/Shanghai">--:--:--</span><small>ESTIMATIVA LOCAL</small></div>
+      <div class="region r-au"><b>AUSTRÁLIA</b><span class="time" data-zone="Australia/Sydney">--:--:--</span><small>SYDNEY • ESTIMATIVA</small></div>
+      <div class="region r-nz"><b>NOVA ZELÂNDIA</b><span class="time" data-zone="Pacific/Auckland">--:--:--</span><small>ESTIMATIVA LOCAL</small></div>
+    </section>
+    <aside class="side">
+      <section class="world-list">
+        <div class="side-title">HORÁRIOS PELO MUNDO</div>
+        <div class="world-row"><span>🇺🇸 Los Angeles</span><b data-zone="America/Los_Angeles">--:--:--</b></div>
+        <div class="world-row"><span>🇺🇸 Nova York</span><b data-zone="America/New_York">--:--:--</b></div>
+        <div class="world-row"><span>🇬🇧 Londres</span><b data-zone="Europe/London">--:--:--</b></div>
+        <div class="world-row"><span>🇫🇷 Europa (Paris)</span><b data-zone="Europe/Paris">--:--:--</b></div>
+        <div class="world-row"><span>🇧🇷 Brasil</span><b data-zone="America/Sao_Paulo">--:--:--</b></div>
+        <div class="world-row"><span>🇮🇳 Índia</span><b data-zone="Asia/Kolkata">--:--:--</b></div>
+        <div class="world-row"><span>🇨🇳 China</span><b data-zone="Asia/Shanghai">--:--:--</b></div>
+        <div class="world-row"><span>🇦🇺 Austrália</span><b data-zone="Australia/Sydney">--:--:--</b></div>
+        <div class="world-row"><span>🇳🇿 Nova Zelândia</span><b data-zone="Pacific/Auckland">--:--:--</b></div>
+        <div class="note">CONTAGENS ESTIMADAS PARA 00:00 DO DIA 19/11 EM CADA FUSO. A ROCKSTAR CONFIRMA A DATA, MAS NÃO PUBLICOU NESTA PÁGINA OS HORÁRIOS REGIONAIS DE DESBLOQUEIO.</div>
+      </section>
+      <section class="question">
+        <div class="q-label">✦ PERGUNTA PRO CHAT</div>
+        <div class="q-text" id="question">Você já comprou GTA VI ou está esperando uma promoção?</div>
+        <div class="q-prompt">COMENTE AO VIVO ↗</div>
+      </section>
+    </aside>
+  </main>
+  <footer class="bottom">
+    <span><span class="live pulse">● AO VIVO</span> GTA VI • CONTAGEM GLOBAL</span>
+    <span>FAN COUNTDOWN • NÃO AFILIADO À ROCKSTAR GAMES</span>
+  </footer>
+</div>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  if (params.get('layout') === 'vertical') document.body.classList.add('vertical');
+
+  // Data oficial de lançamento anunciada pela Rockstar. O horário regional abaixo
+  // é apenas uma referência visual (00:00 local), não uma confirmação de desbloqueio.
+  const RELEASE_DATE = { year: 2026, month: 11, day: 19 };
+  const zones = [...document.querySelectorAll('[data-zone]')];
+
+  // Converte meia-noite de uma zona IANA em um instante UTC, respeitando DST.
+  function localMidnightUtc(zone) {
+    const target = `${RELEASE_DATE.year}-${String(RELEASE_DATE.month).padStart(2,'0')}-${String(RELEASE_DATE.day).padStart(2,'0')} 00:00:00`;
+    let guess = Date.UTC(RELEASE_DATE.year, RELEASE_DATE.month-1, RELEASE_DATE.day);
+    const fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23'
+    });
+    for (let i=0;i<3;i++) {
+      const p = Object.fromEntries(fmt.formatToParts(new Date(guess)).map(x=>[x.type,x.value]));
+      const represented = Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second);
+      const wanted = Date.UTC(RELEASE_DATE.year, RELEASE_DATE.month-1, RELEASE_DATE.day,0,0,0);
+      guess += wanted - represented;
+    }
+    return guess;
+  }
+  const targets = {};
+  zones.forEach(el => { targets[el.dataset.zone] = localMidnightUtc(el.dataset.zone); });
+
+  const pad = n => String(n).padStart(2,'0');
+  function parts(ms) {
+    const total = Math.max(0, Math.floor(ms/1000));
+    return {d:Math.floor(total/86400),h:Math.floor(total%86400/3600),m:Math.floor(total%3600/60),s:total%60};
+  }
+  function update() {
+    const now = Date.now();
+    const br = parts(targets['America/Sao_Paulo'] - now);
+    document.getElementById('days').innerHTML = `${pad(br.d)}<small>DIAS</small>`;
+    document.getElementById('hours').innerHTML = `${pad(br.h)}<small>HORAS</small>`;
+    document.getElementById('minutes').innerHTML = `${pad(br.m)}<small>MIN</small>`;
+    document.getElementById('seconds').innerHTML = `${pad(br.s)}<small>SEG</small>`;
+    zones.forEach(el => {
+      const t = targets[el.dataset.zone];
+      const v = parts(t-now);
+      el.textContent = (t-now <= 0) ? '00:00:00' : `${pad(v.h + v.d*24)}:${pad(v.m)}:${pad(v.s)}`;
+    });
+    document.querySelector('.clock-label').textContent =
+      br.d+br.h+br.m+br.s === 0 ? 'HORÁRIO-ALVO ATINGIDO • BRASIL' : 'CONTAGEM PARA O BRASIL • HORÁRIO-ALVO LOCAL';
+  }
+  update(); setInterval(update, 250);
+
+  const questions = [
+    'Você já comprou GTA VI ou está esperando uma promoção?',
+    'Você acha justo o preço cobrado pelo GTA VI?',
+    'GTA VI está caro demais para um lançamento?',
+    'Você pagaria mais caro pela edição especial do GTA VI?',
+    'Você compraria um PS5 ou Xbox só para jogar GTA VI?',
+    'Você pretende abandonar GTA V quando GTA VI sair?',
+    'Você é do time Jason ou do time Lucia?',
+    'Você acha que a história de GTA VI vai superar a do GTA V?',
+    'Qual personagem do GTA V você gostaria de reencontrar no GTA VI?',
+    'Você acha que GTA Online vai perder jogadores para o novo jogo?',
+    'Você prefere jogar GTA sozinho ou com os amigos?',
+    'Você gostaria de alternar entre Jason e Lucia a qualquer momento?',
+    'Você prefere dirigir em primeira ou em terceira pessoa?',
+    'Você acha que GTA V já ficou ultrapassado?',
+    'Você já comprou o mesmo GTA mais de uma vez, em consoles diferentes?',
+    'Você compraria GTA VI mesmo se não tivesse modo online?',
+    'Você prefere comprar no lançamento ou esperar as primeiras avaliações?',
+    'Você acha que os preços dos jogos estão ficando abusivos?',
+    'Você vai jogar no dia do lançamento ou vai esperar o fim de semana?',
+    'Você pretende terminar a campanha antes de entrar no modo online?',
+    'Você acha que GTA VI vai justificar tantos anos de espera?',
+    'Você prefere um mapa enorme ou uma cidade menor cheia de detalhes?',
+    'Você sente falta de alguma coisa do GTA San Andreas que deveria voltar?',
+    'Você acha que GTA VI deveria ter mais missões dentro de estabelecimentos?',
+    'Você costuma explorar o mapa ou vai direto fazer as missões?',
+    'Você já fez pré-venda de um jogo e depois se arrependeu?',
+    'Você acha melhor comprar GTA VI em mídia física ou digital?',
+    'Você vai jogar com controle original ou pretende usar outro?',
+    'Você acha que o GTA VI vai bater recordes de vendas?',
+    'Se o GTA VI custar mais do que você esperava, você ainda compra?',
+    'Você prefere jogar no lançamento mesmo com possíveis bugs ou esperar atualizações?',
+    'Você acha que GTA VI deveria ter trilha sonora melhor que a do GTA V?',
+    'Você vai acompanhar a história com calma ou tentar zerar o mais rápido possível?',
+    'Você acha que o GTA VI vai fazer você perder horas de sono?',
+    'Você pretende jogar GTA VI com amigos na primeira noite?',
+    'Qual GTA marcou mais sua vida: San Andreas, GTA V ou outro?'
+  ];
+  let bag = [], last = -1;
+  function nextQuestion() {
+    if (!bag.length) {
+      bag = questions.map((_,i)=>i).filter(i=>i!==last);
+      for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
+    }
+    last = bag.pop();
+    const el = document.getElementById('question');
+    el.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:650});
+    el.textContent = questions[last];
+  }
+  nextQuestion();
+  setInterval(nextQuestion, 90000);
+})();
+</script>
+</body>
+</html>
